@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <conio.h>
 #include <time.h>
+#include <string>
 using namespace std;
 
 #define col GetStdHandle(STD_OUTPUT_HANDLE) 
@@ -28,3 +29,4 @@ using namespace std;
 #define START_Y 0
 #define HEIGHT  30
 #define WIDTH   60
+#define MAX_LINE 10
