@@ -43,20 +43,54 @@ void GameManager::ShowPlayerStatus()
 
 void GameManager::PlayGame()
 {
+	char ch;
 	system("cls");
 	SKY_BLUE
 	InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
 	ShowPlayerStatus();
-	InterfaceManager.DrawMidText("이름 입력 : ", WIDTH, HEIGHT / 2 + 2);
-	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 4);
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	InterfaceManager.DrawMidText("Skip : s", WIDTH, HEIGHT / 2 + 6);
 	BLUE
 		LoadStory();
+
+	system("cls");
+	SKY_BLUE
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
+	ShowPlayerStatus();
+	InterfaceManager.DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
+	cin >> ch;
+	m_Player.SetName(ch);
+
+	system("cls");
+	SKY_BLUE
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
+	ShowPlayerStatus();
+	InterfaceManager.DrawMidText("☆ 1Stage ☆", WIDTH, HEIGHT / 2);
+	Sleep(500);
+
+	system("cls");
+	SKY_BLUE
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
+	while (1)
+	{
+		InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+
+		if (_kbhit())
+		{
+
+		}
+
+		ShowPlayerStatus();
+	}
 }
 
 void GameManager::LoadStory()
 {
 	ifstream fLoad;
-	int iLine, iHeight = HEIGHT / 2 -8;
+	char ch;
+	int iLine, iCur = 0,iHeight = HEIGHT / 2 -8;
 	string buf;
 	vector<string> tmp;
 
@@ -71,16 +105,32 @@ void GameManager::LoadStory()
 			tmp.push_back(buf);
 		}
 
-		for (int i = 0; i < iLine - MAX_LINE; i++)
+		for (int i = 0; i < iLine; i++)
 		{
-			iHeight = HEIGHT / 2 - 8;
-			InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 - 8);
-			for (int j = i; i < MAX_LINE; j++)
+			if (_kbhit())
 			{
-				InterfaceManager.gotoxy(WIDTH, iHeight++);
-				Sleep(500);
-				cout << tmp[j];
+				ch = _getch();
+				switch (ch)
+				{
+				case KEY_SKIP:
+					return;
+				}
 			}
+			Sleep(500);
+			if (iCur >= 10 && iCur != 0)
+			{
+				iHeight = HEIGHT / 2 - 8;
+				for (int i = iCur - MAX_LINE + 1; i < iCur + 1; i++)
+				{
+					InterfaceManager.DrawMidText("                                            ",WIDTH, iHeight);
+					InterfaceManager.DrawMidText(tmp[i], WIDTH, iHeight++);
+				}
+			}
+			else
+			{
+				InterfaceManager.DrawMidText(tmp[i], WIDTH, iHeight++);
+			}
+			iCur++;
 		}
 	}
 

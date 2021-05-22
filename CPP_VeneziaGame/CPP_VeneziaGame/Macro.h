@@ -30,3 +30,4 @@ using namespace std;
 #define HEIGHT  30
 #define WIDTH   60
 #define MAX_LINE 10
+#define KEY_SKIP 115

@@ -23,7 +23,14 @@ public:
 	{
 		return m_iScore;
 	}
-
+	void SetName(char chName)
+	{
+		m_strName = chName;
+	}
+	void GetName()
+	{
+		cout << m_strName;
+	}
 	Player();
 	~Player();
 };
