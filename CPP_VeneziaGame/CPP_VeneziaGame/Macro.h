@@ -14,7 +14,7 @@ using namespace std;
 #define GREEN SetConsoleTextAttribute( col,0x0002 );
 #define BLUE_GREEN SetConsoleTextAttribute( col,0x0003 );
 #define BLOOD SetConsoleTextAttribute( col,0x0004 );
-#define PUPPLE SetConsoleTextAttribute( col,0x0005 );
+#define PURPLE SetConsoleTextAttribute( col,0x0005 );
 #define GOLD SetConsoleTextAttribute( col,0x0006 );			//색상 지정
 #define ORIGINAL SetConsoleTextAttribute( col,0x0007 );
 #define GRAY SetConsoleTextAttribute( col,0x0008 );
@@ -31,3 +31,6 @@ using namespace std;
 #define WIDTH   60
 #define MAX_LINE 10
 #define KEY_SKIP 115
+#define DEADZONE 25
+#define DRAW_SPEED 4000
+#define DROP_SPEED 1000

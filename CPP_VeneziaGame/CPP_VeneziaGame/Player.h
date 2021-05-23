@@ -23,9 +23,9 @@ public:
 	{
 		return m_iScore;
 	}
-	void SetName(char chName)
+	void SetName(string name)
 	{
-		m_strName = chName;
+		m_strName = name;
 	}
 	void GetName()
 	{

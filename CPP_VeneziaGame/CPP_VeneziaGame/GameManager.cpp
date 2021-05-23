@@ -43,45 +43,56 @@ void GameManager::ShowPlayerStatus()
 
 void GameManager::PlayGame()
 {
-	char ch;
+	int iDrawClock = clock();
+	int iMoveClock = clock();
+	string input;
+	string ch;
+	string chch;
+	vector<Word> tmp;
+
+	m_WordManager.LoadFile();
+
 	system("cls");
 	SKY_BLUE
-	InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
+	InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
 	ShowPlayerStatus();
 	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 	InterfaceManager.DrawMidText("Skip : s", WIDTH, HEIGHT / 2 + 6);
 	BLUE
 		LoadStory();
 
-	system("cls");
-	SKY_BLUE
-		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
-	ShowPlayerStatus();
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
 	InterfaceManager.DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
 	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
-	cin >> ch;
-	m_Player.SetName(ch);
+	cin >> input;
+	m_Player.SetName(input);
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
 
-	system("cls");
-	SKY_BLUE
-		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
-	ShowPlayerStatus();
 	InterfaceManager.DrawMidText("☆ 1Stage ☆", WIDTH, HEIGHT / 2);
-	Sleep(500);
+	Sleep(1000);
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
+	InterfaceManager.DrawMidText("             ", WIDTH, HEIGHT / 2);
 
-	system("cls");
-	SKY_BLUE
-		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 5);
 	while (1)
 	{
 		InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
-
 		if (_kbhit())
 		{
-
+			InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
+			cin >> ch;
 		}
-
+		if (clock() - iDrawClock >= DRAW_SPEED)
+		{
+			m_WordManager.CreateWord(tmp);
+			iDrawClock = clock();
+		}
+		if (clock() - iMoveClock >= DROP_SPEED)
+		{
+			m_WordManager.DropWord(tmp);
+			m_WordManager.PassCheck(tmp);
+			iMoveClock = clock();
+		}
 		ShowPlayerStatus();
 	}
 }

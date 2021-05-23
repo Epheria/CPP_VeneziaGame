@@ -6,8 +6,8 @@ Interface::Interface()
 
 void Interface::ErasePoint(int x, int y)
 {
-	gotoxy(x * 2, y);
-	cout << "  ";
+	gotoxy(x - 5, y);
+	cout << "              ";
 	gotoxy(-1, -1);
 	return;
 }
