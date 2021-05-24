@@ -63,11 +63,17 @@ int GameManager::Stage(int iStage)
 	bool bflag_Pass = false, bflag_Die = false, bGameOver = false, bNextStage = false;
 	int iDrawClock = clock();
 	int iMoveClock = clock();
+	int iCompareClock = clock();
 	char ch;
 	string input;
 	vector<Word> tmp;
 
-	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2);
+	system("cls");
+
+	SKY_BLUE
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
+	ShowPlayerStatus();
+	InterfaceManager.gotoxy(WIDTH - 2, HEIGHT / 2);
 	cout << "¡Ù " << iStage << "Stage ¡Ù";
 	Sleep(1000);
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
@@ -95,6 +101,19 @@ int GameManager::Stage(int iStage)
 					{
 						m_Player.InitScore();
 						return iStage++;
+					}
+				}
+				else
+				{
+					while (1)
+					{
+						RED
+							InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
+						if (clock() - iCompareClock >= COMPARE_TIME + 2000)
+						{
+							iCompareClock = clock();
+							break;
+						}
 					}
 				}
 				input.clear();

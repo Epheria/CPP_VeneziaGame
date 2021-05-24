@@ -54,7 +54,7 @@ bool WordManager::PassCheck(vector<Word>& tmp)
 {
 	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 	{
-		if (iter->GetPosy() >= DEADZONE)
+		if (iter->GetPosy() == DEADZONE)
 		{
 			iter->Erase(iter->GetName());
 			tmp.erase(iter);

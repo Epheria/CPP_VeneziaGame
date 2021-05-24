@@ -35,6 +35,7 @@ using namespace std;
 #define KEY_BACKSPACE 8
 #define KEY_ENTER 13
 
-#define DEADZONE 25
+#define DEADZONE 26
 #define DRAW_SPEED 2000
 #define DROP_SPEED 700
+#define COMPARE_TIME 2000
