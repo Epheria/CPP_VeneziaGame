@@ -13,7 +13,9 @@ private:
 public:
 	void ShowMenu();
 	void PlayGame();
+	int Stage(int iStage);
 	void LoadStory();
+	void SetPlayerName();
 	void ShowPlayerStatus();
 
 	GameManager();

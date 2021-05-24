@@ -30,7 +30,11 @@ using namespace std;
 #define HEIGHT  30
 #define WIDTH   60
 #define MAX_LINE 10
+
 #define KEY_SKIP 115
+#define KEY_BACKSPACE 8
+#define KEY_ENTER 13
+
 #define DEADZONE 25
-#define DRAW_SPEED 4000
-#define DROP_SPEED 1000
+#define DRAW_SPEED 2000
+#define DROP_SPEED 700

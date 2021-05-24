@@ -12,7 +12,7 @@ private:
 public:
 	void Drop();
 	void Show();
-	void Erase();
+	void Erase(string name);
 	void Pass();
 	void Die();
 
@@ -36,6 +36,10 @@ public:
 	{
 		return m_iy;
 	}
+	inline string GetName()
+	{
+		return m_strName;
+	}
 	Word() {}
 	~Word() {}
 };
@@ -50,8 +54,18 @@ public:
 	inline int Rand();
 	void CreateWord(vector<Word>& tmp);
 	void DropWord(vector<Word>& tmp);
-	//void DieCheck(vector<Word>& tmp);
-	void PassCheck(vector<Word>& tmp);
+	bool DieCheck(vector<Word>& tmp, string input);
+	bool PassCheck(vector<Word>& tmp);
+	int SetDifficulty(int iStage)
+	{
+		int iValue = 0;
+		for (int i = 0; i < iStage; i++)
+		{
+			iValue += 100;
+		}
+
+		return iValue;
+	}
 	WordManager();
 	~WordManager();
 };

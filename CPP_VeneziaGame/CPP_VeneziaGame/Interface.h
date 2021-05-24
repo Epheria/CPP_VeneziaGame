@@ -13,6 +13,7 @@ public:
 	void DrawMidText(string str, int x, int y);
 	void TextDraw(string str, int x, int y);
 	void ErasePoint(int x, int y);
+	void ErasePoint(int x, int y, string name);
 	int MenuSelectCursor(int MenuLen, int AddCol, int x, int y);
 	Interface();
 	inline void gotoxy(int x, int y)

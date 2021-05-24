@@ -10,11 +10,12 @@ void Player::ShowPlayerLife()
 {
 	int iWidth;
 	iWidth = 5;
+	BLUE
 	m_Interface.DrawPoint("Life : ", 1, HEIGHT - 3);
 	for (int i = 0; i < m_iLife; i++)
 	{
 		RED
-		m_Interface.DrawPoint("¢¾", iWidth++, HEIGHT - 3);
+		cout << "¢¾";
 	}
 }
 
@@ -28,16 +29,16 @@ void Player::ShowPlayerScore()
 
 void Player::ShowPlayerName()
 {
+	m_Interface.ErasePoint(WIDTH * 2 - 20, HEIGHT - 3);
 	if (m_strName.empty())
 	{
 		BLUE
 		m_Interface.DrawMidText("Name : ", WIDTH * 2 - 20, HEIGHT - 3);
 		PURPLE
-		cout << " ? ? ? ";
+		cout << "???";
 	}
 	else
 	{
-		m_Interface.DrawMidText("                   ", WIDTH * 2 - 20, HEIGHT - 3);
 		BLUE
 		m_Interface.DrawMidText("Name : ", WIDTH * 2 - 20, HEIGHT - 3);
 		PURPLE

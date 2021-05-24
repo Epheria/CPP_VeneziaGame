@@ -15,6 +15,28 @@ public:
 	void ShowPlayerScore();
 	void ShowPlayerName();
 
+	inline bool AddScore(int iScore = 13)
+	{
+		m_iScore += iScore;
+		if (m_iScore >= 100)
+		{
+			return true;
+		}
+		return false;
+	}
+	inline bool DamageLife(int iDamage = 1)
+	{
+		m_iLife -= iDamage;
+		if (m_iLife == 0)
+		{
+			return true;
+		}
+		return false;
+	}
+	inline void InitLife()
+	{
+		m_iLife = 9;
+	}
 	inline int GetLife()
 	{
 		return m_iLife;
@@ -22,6 +44,10 @@ public:
 	inline int GetScore()
 	{
 		return m_iScore;
+	}
+	inline void InitScore()
+	{
+		m_iScore = 0;
 	}
 	void SetName(string name)
 	{

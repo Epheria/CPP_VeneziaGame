@@ -7,7 +7,18 @@ Interface::Interface()
 void Interface::ErasePoint(int x, int y)
 {
 	gotoxy(x - 5, y);
-	cout << "              ";
+	cout << "             ";
+	gotoxy(-1, -1);
+	return;
+}
+
+void Interface::ErasePoint(int x, int y, string name)
+{
+	gotoxy(x -= name.size() / 2, y);
+	for (int i = 0; i < name.length(); i++)
+	{
+		cout << "  ";
+	}
 	gotoxy(-1, -1);
 	return;
 }

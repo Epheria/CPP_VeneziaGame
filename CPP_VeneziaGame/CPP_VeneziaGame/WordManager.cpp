@@ -44,35 +44,50 @@ void WordManager::DropWord(vector<Word>& tmp)
 {
 	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 	{
-		iter->Erase();
+		iter->Erase(iter->GetName());
 		iter->Drop();			
 		iter->Show();
 	}
 }
 
-void WordManager::PassCheck(vector<Word>& tmp)
+bool WordManager::PassCheck(vector<Word>& tmp)
 {
 	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 	{
 		if (iter->GetPosy() >= DEADZONE)
 		{
-			iter->Erase();
+			iter->Erase(iter->GetName());
 			tmp.erase(iter);
-			return;
+			return true;
 		}
 	}
+	return false;
+}
+
+bool WordManager::DieCheck(vector<Word>& tmp, string input)
+{
+	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
+	{
+		if (iter->GetName() == input)
+		{
+			iter->Erase(iter->GetName());
+			tmp.erase(iter);
+			return true;
+		}
+	}
+	return false;
 }
 
 int WordManager::Rand()
 {
 	srand(time(NULL));
 	int Posx;
-	Posx = rand() % 110 + 1;
+	Posx = rand() % 100 + 10;
 	for (vector<Word>::iterator iter = m_WordList.begin(); iter != m_WordList.end(); iter++)
 	{
 		if (Posx == iter->GetPosx())
 		{
-			Posx = rand() % 108 + 2;
+			Posx = rand() % 100 + 10;
 		}
 	}
 
@@ -90,12 +105,13 @@ void Word::Drop()
 
 void Word::Show()
 {
+	BLUE
 	DrawManager.DrawMidText(m_strName, m_ix, m_iy);
 }
 
-void Word::Erase()
+void Word::Erase(string name)
 {
-	DrawManager.ErasePoint(m_ix, m_iy);
+	DrawManager.ErasePoint(m_ix, m_iy, name);
 }
 
 void Word::Die()

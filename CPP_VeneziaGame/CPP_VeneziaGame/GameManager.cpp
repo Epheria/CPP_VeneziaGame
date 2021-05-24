@@ -7,6 +7,7 @@ GameManager::GameManager()
 void GameManager::ShowMenu()
 {
 	int iSelect;
+	m_WordManager.LoadFile();
 
 	while (1)
 	{
@@ -43,54 +44,98 @@ void GameManager::ShowPlayerStatus()
 
 void GameManager::PlayGame()
 {
-	int iDrawClock = clock();
-	int iMoveClock = clock();
-	string input;
-	string ch;
-	string chch;
-	vector<Word> tmp;
+	int iStage = 1;
 
-	m_WordManager.LoadFile();
-
-	system("cls");
-	SKY_BLUE
-	InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
-	ShowPlayerStatus();
-	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
-	InterfaceManager.DrawMidText("Skip : s", WIDTH, HEIGHT / 2 + 6);
-	BLUE
-		LoadStory();
-
-	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
-	InterfaceManager.DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
-	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
-	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
-	cin >> input;
-	m_Player.SetName(input);
-	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
-
-	InterfaceManager.DrawMidText("☆ 1Stage ☆", WIDTH, HEIGHT / 2);
-	Sleep(1000);
-	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
-	InterfaceManager.DrawMidText("             ", WIDTH, HEIGHT / 2);
+	LoadStory();
+	SetPlayerName();
 
 	while (1)
 	{
+		iStage = Stage(iStage);
+
+		if (iStage == 0 || iStage == 5)
+			return;
+	}	
+}
+
+int GameManager::Stage(int iStage)
+{
+	bool bflag_Pass = false, bflag_Die = false, bGameOver = false, bNextStage = false;
+	int iDrawClock = clock();
+	int iMoveClock = clock();
+	char ch;
+	string input;
+	vector<Word> tmp;
+
+	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2);
+	cout << "☆ " << iStage << "Stage ☆";
+	Sleep(1000);
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
+	InterfaceManager.DrawMidText("                   ", WIDTH, HEIGHT / 2);
+
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	while (1)
+	{
 		InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+		InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+		if (!input.empty())
+			cout << input;
 		if (_kbhit())
 		{
-			InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
-			cin >> ch;
+			InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+			InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+			ch = _getch();
+			if (ch == KEY_ENTER)
+			{
+				bflag_Die = m_WordManager.DieCheck(tmp, input);
+				if (bflag_Die == true)
+				{
+					bNextStage = m_Player.AddScore();
+					if (bNextStage == true)
+					{
+						m_Player.InitScore();
+						return iStage++;
+					}
+				}
+				input.clear();
+			}
+			else if (ch == KEY_BACKSPACE)
+			{
+				if (!input.empty())
+					input.pop_back();
+				cout << input;
+			}
+			else
+			{
+				input += ch;
+				cout << input;
+			}
 		}
-		if (clock() - iDrawClock >= DRAW_SPEED)
+		if (clock() - iDrawClock >= DRAW_SPEED + m_WordManager.SetDifficulty(iStage))
 		{
 			m_WordManager.CreateWord(tmp);
 			iDrawClock = clock();
 		}
-		if (clock() - iMoveClock >= DROP_SPEED)
+		if (clock() - iMoveClock >= DROP_SPEED + m_WordManager.SetDifficulty(iStage))
 		{
 			m_WordManager.DropWord(tmp);
-			m_WordManager.PassCheck(tmp);
+			bflag_Pass = m_WordManager.PassCheck(tmp);
+			if (bflag_Pass == true)
+			{
+				bGameOver = m_Player.DamageLife();
+				InterfaceManager.DrawPoint("                         ", 1, HEIGHT - 3);
+				if (bGameOver == true)
+				{
+					system("cls");
+					SKY_BLUE
+						InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
+					RED
+						InterfaceManager.DrawMidText("☆ Game Over ☆", WIDTH, HEIGHT / 2);
+					char tmpCh = _getch();
+					m_Player.InitLife();
+					return 0;
+				}
+			}
 			iMoveClock = clock();
 		}
 		ShowPlayerStatus();
@@ -104,6 +149,14 @@ void GameManager::LoadStory()
 	int iLine, iCur = 0,iHeight = HEIGHT / 2 -8;
 	string buf;
 	vector<string> tmp;
+
+	system("cls");
+	SKY_BLUE
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
+	ShowPlayerStatus();
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	InterfaceManager.DrawMidText("Skip : s", WIDTH, HEIGHT / 2 + 6);
+	BLUE
 
 	fLoad.open("veneziaStory.txt");
 
@@ -146,6 +199,19 @@ void GameManager::LoadStory()
 	}
 
 	fLoad.close();
+}
+
+void GameManager::SetPlayerName()
+{
+	string name;
+
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
+	InterfaceManager.DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
+	cin >> name;
+	m_Player.SetName(name);
+	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
 }
 
 GameManager::~GameManager()
