@@ -12,9 +12,10 @@ typedef struct Ranker
 class Rank
 {
 private:
+	Interface DrawManager;
 public:
 	void SaveRank(Player& m_Player, int iStage);
-	vector<Ranker> LoadRank(Player& m_Player);
+	void LoadRank(Player& m_Player);
 	Rank();
 	~Rank();
 };

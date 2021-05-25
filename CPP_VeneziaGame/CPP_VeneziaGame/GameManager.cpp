@@ -28,6 +28,7 @@ void GameManager::ShowMenu()
 				PlayGame();
 				break;
 			case 2:
+				ShowRank();
 				break;
 			case 3:
 				return;
@@ -53,9 +54,8 @@ void GameManager::PlayGame()
 	{
 		iStage = Stage(iStage);
 
-		if (iStage == 5)
+		if (iStage == 0 || iStage == 5)
 		{
-			m_RankManager.SaveRank(m_Player, iStage);
 			return;
 		}
 	}	
@@ -106,7 +106,6 @@ int GameManager::Stage(int iStage)
 						bInputCheck = true;
 						if (bNextStage == true)
 						{
-							m_Player.InitScore();
 							return iStage += 1;
 						}
 					}
@@ -159,13 +158,14 @@ int GameManager::Stage(int iStage)
 				InterfaceManager.DrawPoint("                         ", 1, HEIGHT - 3);
 				if (bGameOver == true)
 				{
+					m_RankManager.SaveRank(m_Player, iStage);
 					system("cls");
 					SKY_BLUE
 						InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
 					RED
 						InterfaceManager.DrawMidText("¡Ù Game Over ¡Ù", WIDTH, HEIGHT / 2);
 					char tmpCh = _getch();
-					m_RankManager.SaveRank(m_Player, iStage);
+					m_Player.InitScore();
 					m_Player.InitLife();
 					return 0;
 				}
@@ -250,32 +250,7 @@ void GameManager::SetPlayerName()
 
 void GameManager::ShowRank()
 {
-	int iHeight = START_Y + 9;
-	vector<Ranker> RankerList;
-	RankerList = m_RankManager.LoadRank(m_Player);
-
-	system("cls");
-	GREEN
-		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
-	BLUE
-		InterfaceManager.BoxDraw(WIDTH, START_Y + 4, 20, 5);
-	InterfaceManager.DrawMidText("Ranking", WIDTH, START_Y + 7);
-	InterfaceManager.gotoxy(WIDTH, START_Y + 9);
-	for (int i = 0; i < 60; i++)
-		cout << "=";
-	InterfaceManager.DrawMidText("Name", WIDTH- 10, START_Y + 9);
-	InterfaceManager.DrawMidText("Score", WIDTH, START_Y + 9);
-	InterfaceManager.DrawMidText("Stage", WIDTH + 10, START_Y + 9);
-
-	for (vector<Ranker>::iterator iter = RankerList.begin(); iter != RankerList.end(); iter++)
-	{
-		InterfaceManager.gotoxy(WIDTH - 10, iHeight += 2);
-		InterfaceManager.DrawMidText(iter->strName, WIDTH, iHeight);
-		InterfaceManager.gotoxy(WIDTH, iHeight += 2);
-		InterfaceManager.DrawMidText(iter->iScore, WIDTH, iHeight);
-		InterfaceManager.gotoxy(WIDTH + 10, iHeight += 2);
-		InterfaceManager.DrawMidText(iter->strName, WIDTH, iHeight);
-	}
+	m_RankManager.LoadRank(m_Player);
 }
 
 GameManager::~GameManager()
