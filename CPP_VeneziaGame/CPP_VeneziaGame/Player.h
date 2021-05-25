@@ -53,9 +53,9 @@ public:
 	{
 		m_strName = name;
 	}
-	void GetName()
+	string GetName()
 	{
-		cout << m_strName;
+		return m_strName;
 	}
 	Player();
 	~Player();

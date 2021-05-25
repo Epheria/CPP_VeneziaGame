@@ -37,5 +37,5 @@ using namespace std;
 
 #define DEADZONE 26
 #define DRAW_SPEED 2000
-#define DROP_SPEED 700
+#define DROP_SPEED 100
 #define COMPARE_TIME 2000

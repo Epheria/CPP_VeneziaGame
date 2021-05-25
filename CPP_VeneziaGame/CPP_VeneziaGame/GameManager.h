@@ -3,13 +3,14 @@
 #include "Interface.h"
 #include "Player.h"
 #include "WordManager.h"
-
+#include "Rank.h"
 class GameManager
 {
 private:
 	Interface InterfaceManager;
 	Player m_Player;
 	WordManager m_WordManager;
+	Rank m_RankManager;
 public:
 	void ShowMenu();
 	void PlayGame();
@@ -17,7 +18,7 @@ public:
 	void LoadStory();
 	void SetPlayerName();
 	void ShowPlayerStatus();
-
+	void ShowRank();
 	GameManager();
 	~GameManager();
 };

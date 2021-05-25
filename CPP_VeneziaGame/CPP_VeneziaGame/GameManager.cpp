@@ -53,14 +53,18 @@ void GameManager::PlayGame()
 	{
 		iStage = Stage(iStage);
 
-		if (iStage == 0 || iStage == 5)
+		if (iStage == 5)
+		{
+			m_RankManager.SaveRank(m_Player, iStage);
 			return;
+		}
 	}	
 }
 
 int GameManager::Stage(int iStage)
 {
 	bool bflag_Pass = false, bflag_Die = false, bGameOver = false, bNextStage = false;
+	bool bInputCheck = true;
 	int iDrawClock = clock();
 	int iMoveClock = clock();
 	int iCompareClock = clock();
@@ -74,7 +78,7 @@ int GameManager::Stage(int iStage)
 		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
 	ShowPlayerStatus();
 	InterfaceManager.gotoxy(WIDTH - 2, HEIGHT / 2);
-	cout << "』 " << iStage << "Stage 』";
+	cout << "』 " << iStage << " Stage 』";
 	Sleep(1000);
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
 	InterfaceManager.DrawMidText("                   ", WIDTH, HEIGHT / 2);
@@ -82,60 +86,70 @@ int GameManager::Stage(int iStage)
 	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 	while (1)
 	{
-		InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 		InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
 		if (!input.empty())
 			cout << input;
 		if (_kbhit())
 		{
-			InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+			//InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 			InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
-			ch = _getch();
-			if (ch == KEY_ENTER)
+
+			if (bInputCheck == true)
 			{
-				bflag_Die = m_WordManager.DieCheck(tmp, input);
-				if (bflag_Die == true)
+				ch = _getch();
+				if (ch == KEY_ENTER)
 				{
-					bNextStage = m_Player.AddScore();
-					if (bNextStage == true)
+					bflag_Die = m_WordManager.DieCheck(tmp, input);
+					if (bflag_Die == true)
 					{
-						m_Player.InitScore();
-						return iStage++;
+						bNextStage = m_Player.AddScore();
+						bInputCheck = true;
+						if (bNextStage == true)
+						{
+							m_Player.InitScore();
+							return iStage += 1;
+						}
 					}
+					else
+					{
+						bInputCheck = false;
+					}
+					InterfaceManager.ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, input);
+					input.clear();
+				}
+				else if (ch == KEY_BACKSPACE)
+				{
+					InterfaceManager.ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, input);
+					if (!input.empty())
+						input.pop_back();
+					InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+					cout << input;
 				}
 				else
 				{
-					while (1)
-					{
-						RED
-							InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
-						if (clock() - iCompareClock >= COMPARE_TIME + 2000)
-						{
-							iCompareClock = clock();
-							break;
-						}
-					}
+					input += ch;
+					cout << input;
 				}
-				input.clear();
-			}
-			else if (ch == KEY_BACKSPACE)
-			{
-				if (!input.empty())
-					input.pop_back();
-				cout << input;
+				iCompareClock = clock();
 			}
 			else
 			{
-				input += ch;
-				cout << input;
+				RED
+					InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
+					if (clock() - iCompareClock >= COMPARE_TIME + 2000)
+					{
+						InterfaceManager.ErasePoint(WIDTH, HEIGHT / 2 + 6, "Failed compare!");
+						iCompareClock = clock();
+						bInputCheck = true;
+					}
 			}
 		}
-		if (clock() - iDrawClock >= DRAW_SPEED + m_WordManager.SetDifficulty(iStage))
+		if (clock() - iDrawClock >= DRAW_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
 			m_WordManager.CreateWord(tmp);
 			iDrawClock = clock();
 		}
-		if (clock() - iMoveClock >= DROP_SPEED + m_WordManager.SetDifficulty(iStage))
+		if (clock() - iMoveClock >= DROP_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
 			m_WordManager.DropWord(tmp);
 			bflag_Pass = m_WordManager.PassCheck(tmp);
@@ -151,6 +165,7 @@ int GameManager::Stage(int iStage)
 					RED
 						InterfaceManager.DrawMidText("』 Game Over 』", WIDTH, HEIGHT / 2);
 					char tmpCh = _getch();
+					m_RankManager.SaveRank(m_Player, iStage);
 					m_Player.InitLife();
 					return 0;
 				}
@@ -231,6 +246,36 @@ void GameManager::SetPlayerName()
 	cin >> name;
 	m_Player.SetName(name);
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
+}
+
+void GameManager::ShowRank()
+{
+	int iHeight = START_Y + 9;
+	vector<Ranker> RankerList;
+	RankerList = m_RankManager.LoadRank(m_Player);
+
+	system("cls");
+	GREEN
+		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
+	BLUE
+		InterfaceManager.BoxDraw(WIDTH, START_Y + 4, 20, 5);
+	InterfaceManager.DrawMidText("Ranking", WIDTH, START_Y + 7);
+	InterfaceManager.gotoxy(WIDTH, START_Y + 9);
+	for (int i = 0; i < 60; i++)
+		cout << "=";
+	InterfaceManager.DrawMidText("Name", WIDTH- 10, START_Y + 9);
+	InterfaceManager.DrawMidText("Score", WIDTH, START_Y + 9);
+	InterfaceManager.DrawMidText("Stage", WIDTH + 10, START_Y + 9);
+
+	for (vector<Ranker>::iterator iter = RankerList.begin(); iter != RankerList.end(); iter++)
+	{
+		InterfaceManager.gotoxy(WIDTH - 10, iHeight += 2);
+		InterfaceManager.DrawMidText(iter->strName, WIDTH, iHeight);
+		InterfaceManager.gotoxy(WIDTH, iHeight += 2);
+		InterfaceManager.DrawMidText(iter->iScore, WIDTH, iHeight);
+		InterfaceManager.gotoxy(WIDTH + 10, iHeight += 2);
+		InterfaceManager.DrawMidText(iter->strName, WIDTH, iHeight);
+	}
 }
 
 GameManager::~GameManager()

@@ -49,6 +49,7 @@ class WordManager
 private:
 	int m_iWordNum;
 	vector<Word> m_WordList;
+	Interface DrawManager;
 public:
 	void LoadFile();
 	inline int Rand();
@@ -59,9 +60,9 @@ public:
 	int SetDifficulty(int iStage)
 	{
 		int iValue = 0;
-		for (int i = 0; i < iStage; i++)
+		for (int i = 1; i < iStage; i++)
 		{
-			iValue += 100;
+			iValue += 200;
 		}
 
 		return iValue;

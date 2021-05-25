@@ -47,6 +47,10 @@ void WordManager::DropWord(vector<Word>& tmp)
 		iter->Erase(iter->GetName());
 		iter->Drop();			
 		iter->Show();
+		if ((iter->GetPosx() >= WIDTH - 20 && iter->GetPosx() <= WIDTH + 10))
+		{
+			DrawManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+		}
 	}
 }
 
@@ -57,6 +61,22 @@ bool WordManager::PassCheck(vector<Word>& tmp)
 		if (iter->GetPosy() == DEADZONE)
 		{
 			iter->Erase(iter->GetName());
+			DrawManager.gotoxy(0, HEIGHT - 4);
+			for (int i = 0; i < 60; i++)
+			{
+				if (i == 0)
+				{
+					cout << "¦¦";
+				}
+				else if (i == 59)
+				{
+					cout << "¦¥";
+				}
+				else
+				{
+					cout << "¦¡";
+				}
+			}
 			tmp.erase(iter);
 			return true;
 		}
