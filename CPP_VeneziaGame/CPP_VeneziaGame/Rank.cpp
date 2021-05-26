@@ -10,7 +10,8 @@ void Rank::SaveRank(Player& m_Player, int iStage)
 	fSave.open("Rank.txt", ios::app);
 	if (fSave.is_open())
 	{
-		fSave << m_Player.GetName() << " " << m_Player.GetScore() << " " << iStage << endl;
+		fSave << endl;
+		fSave << m_Player.GetName() << " " << m_Player.GetScore() << " " << iStage;
 		fSave.close();
 	}
 }
@@ -45,8 +46,24 @@ void Rank::LoadRank(Player& m_Player)
 	DrawManager.DrawMidText("Score", WIDTH, START_Y + 11);
 	DrawManager.DrawMidText("Stage", WIDTH + 15, START_Y + 11);
 
+	vector<Ranker> tmp2;
+
 	if (!RankerList.empty())
 	{
+		for(int i = 0; i < RankerList.size() - 1; i++)
+		{
+			for (int j = 0; j < RankerList.size() - i - 1; j++)
+			{
+				if (RankerList[j].iScore < RankerList[j + 1].iScore)
+				{
+					tmp2.push_back(RankerList[j]);
+					RankerList[j] = RankerList[j + 1];
+					RankerList[j + 1] = tmp2[0];
+					tmp2.clear();
+				}
+			}
+		}
+
 		for (vector<Ranker>::iterator iter = RankerList.begin(); iter != RankerList.end(); iter++)
 		{
 			DrawManager.DrawMidText(iter->strName, WIDTH - 15, iHeight += 2);

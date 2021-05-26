@@ -8,13 +8,13 @@ private:
 	int m_ix;
 	int m_iy;
 	string m_strName;
+	ITEM m_eItem;
 	Interface DrawManager;
 public:
 	void Drop();
-	void Show();
+	void Show(bool m_bBlind);
 	void Erase(string name);
-	void Pass();
-	void Die();
+	void SetItem();
 
 	inline void SetName(string Name)
 	{
@@ -40,6 +40,10 @@ public:
 	{
 		return m_strName;
 	}
+	inline ITEM GetItem()
+	{
+		return m_eItem;
+	}
 	Word() {}
 	~Word() {}
 };
@@ -47,25 +51,29 @@ public:
 class WordManager
 {
 private:
+	bool m_bStop;
+	bool m_bBlind;
+	bool m_bAllClear;
+	int m_iWordSpeed;
 	int m_iWordNum;
 	vector<Word> m_WordList;
 	Interface DrawManager;
 public:
 	void LoadFile();
 	inline int Rand();
-	void CreateWord(vector<Word>& tmp);
-	void DropWord(vector<Word>& tmp);
-	bool DieCheck(vector<Word>& tmp, string input);
+	void CreateWord(vector<Word>& tmp, int iStopTime);
+	void DropWord(vector<Word>& tmp, int iBlindTime, int iStopTime);
+	bool DieCheck(vector<Word>& tmp, string input, int& iScore);
 	bool PassCheck(vector<Word>& tmp);
+	void UseItem(vector<Word>::iterator iter);
 	int SetDifficulty(int iStage)
 	{
-		int iValue = 0;
 		for (int i = 1; i < iStage; i++)
 		{
-			iValue += 200;
+			m_iWordSpeed += 200;
 		}
 
-		return iValue;
+		return m_iWordSpeed;
 	}
 	WordManager();
 	~WordManager();

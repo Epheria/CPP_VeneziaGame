@@ -3,7 +3,11 @@
 
 WordManager::WordManager()
 {
+	m_bBlind = false;
+	m_bStop = false;
+	m_bAllClear = false;
 	m_iWordNum = 0;
+	m_iWordSpeed = 0;
 }
 
 void WordManager::LoadFile()
@@ -24,6 +28,7 @@ void WordManager::LoadFile()
 			tmp.SetName(buf);
 			tmp.SetPosx(Rand());
 			tmp.SetPosy(1);
+			tmp.SetItem();
 
 			m_WordList.push_back(tmp);
 		}
@@ -31,27 +36,54 @@ void WordManager::LoadFile()
 	fLoad.close();
 }
 
-void WordManager::CreateWord(vector<Word>& tmp)
+void WordManager::CreateWord(vector<Word>& tmp, int iStopTime)
 {
 	srand(time(NULL));
 	Word wTmp;
 	int index = rand() % m_iWordNum;
-	wTmp = m_WordList[index];
-	tmp.push_back(wTmp);
+	if (m_bStop == false)
+	{
+		for (vector<Word>::iterator iter = m_WordList.begin(); iter != m_WordList.end(); iter++)
+		{
+			if (m_WordList[index].GetName() == iter->GetName())
+			{
+				index = rand() % m_iWordNum;
+			}
+		}
+		wTmp = m_WordList[index];
+		tmp.push_back(wTmp);
+	}
+	else
+	{
+		if (clock() - iStopTime >= ITEM_STOPTIME)
+			m_bStop = false;
+	}
 }
 
-void WordManager::DropWord(vector<Word>& tmp)
+void WordManager::DropWord(vector<Word>& tmp, int iBlindTime, int iStopTime)
 {
-	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
+	if (m_bStop == false)
 	{
-		iter->Erase(iter->GetName());
-		iter->Drop();			
-		iter->Show();
-		if ((iter->GetPosx() >= WIDTH - 20 && iter->GetPosx() <= WIDTH + 10))
+		for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 		{
-			DrawManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+			iter->Erase(iter->GetName());
+			iter->Drop();
+			iter->Show(m_bBlind);
+			if ((iter->GetPosx() >= WIDTH - 20 && iter->GetPosx() <= WIDTH + 10))
+			{
+				DrawManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+			}
 		}
 	}
+	else
+	{
+		if (clock() - iStopTime >= ITEM_STOPTIME)
+			m_bStop = false;
+	}
+
+
+	if (clock() - iBlindTime >= ITEM_BLINDTIME)
+		m_bBlind = false;
 }
 
 bool WordManager::PassCheck(vector<Word>& tmp)
@@ -84,13 +116,25 @@ bool WordManager::PassCheck(vector<Word>& tmp)
 	return false;
 }
 
-bool WordManager::DieCheck(vector<Word>& tmp, string input)
+bool WordManager::DieCheck(vector<Word>& tmp, string input, int& iScore)
 {
+	int iKillCount = 0;
 	for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 	{
 		if (iter->GetName() == input)
 		{
 			iter->Erase(iter->GetName());
+			if (!(iter->GetItem() == ITEM_DEFAULT))
+			{
+				UseItem(iter);
+				if (m_bAllClear == true)
+				{
+					iKillCount = tmp.size();
+					iScore = iKillCount;
+					tmp.clear();
+					return true;
+				}
+			}
 			tmp.erase(iter);
 			return true;
 		}
@@ -114,6 +158,30 @@ int WordManager::Rand()
 	return Posx;
 }
 
+void WordManager::UseItem(vector<Word>::iterator iter)
+{
+	if (iter->GetItem() == ITEM_INCREASE)
+	{
+		m_iWordSpeed -= 100;
+	}
+	else if (iter->GetItem() == ITEM_DECREASE)
+	{
+		m_iWordSpeed += 100;
+	}
+	else if (iter->GetItem() == ITEM_STOP)
+	{
+		m_bStop = true;
+	}
+	else if (iter->GetItem() == ITEM_ALLCLEAR)
+	{
+		m_bAllClear = true;
+	}
+	else if (iter->GetItem() == ITEM_BLIND)
+	{
+		m_bBlind = true;
+	}
+}
+
 WordManager::~WordManager()
 {
 }
@@ -123,10 +191,23 @@ void Word::Drop()
 	m_iy++;
 }
 
-void Word::Show()
+void Word::Show(bool m_bBlind)
 {
-	BLUE
-	DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+	if (m_eItem == ITEM_DEFAULT)
+	{
+		BLUE
+			DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+	}
+	else if (m_bBlind == true)
+	{
+		YELLOW
+			DrawManager.DrawMidText("==========", m_ix, m_iy);
+	}
+	else
+	{
+		PURPLE
+			DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+	}
 }
 
 void Word::Erase(string name)
@@ -134,12 +215,21 @@ void Word::Erase(string name)
 	DrawManager.ErasePoint(m_ix, m_iy, name);
 }
 
-void Word::Die()
+void Word::SetItem()
 {
+	srand(time(NULL));
+	int iRand = rand() % 100 + 1;
 
-}
-
-void Word::Pass()
-{
-
+	if (iRand >= 1 && iRand <= 2)
+		m_eItem = ITEM_INCREASE;
+	else if (iRand >= 3 && iRand <= 4)
+		m_eItem = ITEM_DECREASE;
+	else if (iRand >= 5 && iRand <= 6)
+		m_eItem = ITEM_STOP;
+	else if (iRand >= 7 && iRand <= 8)
+		m_eItem = ITEM_ALLCLEAR;
+	else if (iRand >= 9 && iRand <= 10)
+		m_eItem = ITEM_BLIND;
+	else if(iRand >= 11 && iRand <= 100)
+		m_eItem = ITEM_DEFAULT;
 }

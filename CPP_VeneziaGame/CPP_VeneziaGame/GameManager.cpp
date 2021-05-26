@@ -68,7 +68,11 @@ int GameManager::Stage(int iStage)
 	int iDrawClock = clock();
 	int iMoveClock = clock();
 	int iCompareClock = clock();
+	int iItemClock = clock();
+	int iBlindTime = clock();
+	int iStopTime = clock();
 	char ch;
+	int iAllClear = 0;
 	string input;
 	vector<Word> tmp;
 
@@ -91,7 +95,6 @@ int GameManager::Stage(int iStage)
 			cout << input;
 		if (_kbhit())
 		{
-			//InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
 			InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
 
 			if (bInputCheck == true)
@@ -99,10 +102,10 @@ int GameManager::Stage(int iStage)
 				ch = _getch();
 				if (ch == KEY_ENTER)
 				{
-					bflag_Die = m_WordManager.DieCheck(tmp, input);
+					bflag_Die = m_WordManager.DieCheck(tmp, input, iAllClear);
 					if (bflag_Die == true)
 					{
-						bNextStage = m_Player.AddScore();
+						bNextStage = m_Player.AddScore(iAllClear);
 						bInputCheck = true;
 						if (bNextStage == true)
 						{
@@ -145,12 +148,13 @@ int GameManager::Stage(int iStage)
 		}
 		if (clock() - iDrawClock >= DRAW_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
-			m_WordManager.CreateWord(tmp);
+			m_WordManager.CreateWord(tmp, iStopTime);
 			iDrawClock = clock();
+			iStopTime = clock();
 		}
 		if (clock() - iMoveClock >= DROP_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
-			m_WordManager.DropWord(tmp);
+			m_WordManager.DropWord(tmp, iBlindTime, iStopTime);
 			bflag_Pass = m_WordManager.PassCheck(tmp);
 			if (bflag_Pass == true)
 			{
@@ -171,6 +175,8 @@ int GameManager::Stage(int iStage)
 				}
 			}
 			iMoveClock = clock();
+			iBlindTime = clock();
+			iStopTime = clock();
 		}
 		ShowPlayerStatus();
 	}

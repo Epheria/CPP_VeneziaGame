@@ -15,10 +15,11 @@ public:
 	void ShowPlayerScore();
 	void ShowPlayerName();
 
-	inline bool AddScore(int iScore = 13)
+	inline bool AddScore(int iAllClear, int iScore = 10)
 	{
 		m_iScore += iScore;
-		if (m_iScore >= 100)
+		m_iScore += iAllClear;
+		if (m_iScore % 100 == 0)
 		{
 			return true;
 		}
