@@ -28,7 +28,7 @@ void WordManager::LoadFile()
 			tmp.SetName(buf);
 			tmp.SetPosx(Rand());
 			tmp.SetPosy(1);
-			tmp.SetItem();
+			tmp.RandItem();
 
 			m_WordList.push_back(tmp);
 		}
@@ -36,31 +36,24 @@ void WordManager::LoadFile()
 	fLoad.close();
 }
 
-void WordManager::CreateWord(vector<Word>& tmp, int iStopTime)
+void WordManager::CreateWord(vector<Word>& tmp, int iClock)
 {
 	srand(time(NULL));
 	Word wTmp;
 	int index = rand() % m_iWordNum;
-	if (m_bStop == false)
-	{
-		for (vector<Word>::iterator iter = m_WordList.begin(); iter != m_WordList.end(); iter++)
-		{
-			if (m_WordList[index].GetName() == iter->GetName())
-			{
-				index = rand() % m_iWordNum;
-			}
-		}
+	
+		//for (vector<Word>::iterator iter = m_WordList.begin(); iter != m_WordList.end(); iter++)
+		//{
+		//	if (m_WordList[index].GetName() == iter->GetName())
+		//	{
+		//		index = rand() % m_iWordNum;
+		//	}
+		//}
 		wTmp = m_WordList[index];
 		tmp.push_back(wTmp);
-	}
-	else
-	{
-		if (clock() - iStopTime >= ITEM_STOPTIME)
-			m_bStop = false;
-	}
 }
 
-void WordManager::DropWord(vector<Word>& tmp, int iBlindTime, int iStopTime)
+void WordManager::DropWord(vector<Word>& tmp, int iClock)
 {
 	if (m_bStop == false)
 	{
@@ -75,15 +68,6 @@ void WordManager::DropWord(vector<Word>& tmp, int iBlindTime, int iStopTime)
 			}
 		}
 	}
-	else
-	{
-		if (clock() - iStopTime >= ITEM_STOPTIME)
-			m_bStop = false;
-	}
-
-
-	if (clock() - iBlindTime >= ITEM_BLINDTIME)
-		m_bBlind = false;
 }
 
 bool WordManager::PassCheck(vector<Word>& tmp)
@@ -129,9 +113,14 @@ bool WordManager::DieCheck(vector<Word>& tmp, string input, int& iScore)
 				UseItem(iter);
 				if (m_bAllClear == true)
 				{
-					iKillCount = tmp.size();
-					iScore = iKillCount;
+					for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
+					{
+						iKillCount = tmp.size();
+						iter->Erase(iter->GetName());
+					}
 					tmp.clear();
+					iScore = iKillCount * 10;
+					m_bAllClear = false;
 					return true;
 				}
 			}
@@ -193,20 +182,48 @@ void Word::Drop()
 
 void Word::Show(bool m_bBlind)
 {
-	if (m_eItem == ITEM_DEFAULT)
-	{
-		BLUE
-			DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-	}
-	else if (m_bBlind == true)
+	if (m_bBlind == true)
 	{
 		YELLOW
 			DrawManager.DrawMidText("==========", m_ix, m_iy);
 	}
 	else
 	{
-		PURPLE
-			DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		if (m_eItem == ITEM_DEFAULT)
+		{
+			BLUE
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		else if (m_eItem == ITEM_BLIND)
+		{
+			GREEN
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		else if (m_eItem == ITEM_ALLCLEAR)
+		{
+			GOLD
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		else if (m_eItem == ITEM_DECREASE)
+		{
+			ORIGINAL
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		else if (m_eItem == ITEM_INCREASE)
+		{
+			GRAY
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		else if (m_eItem == ITEM_STOP)
+		{
+			RED
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
+		//else
+		//{
+		//	PURPLE
+		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		//}
 	}
 }
 
@@ -215,21 +232,21 @@ void Word::Erase(string name)
 	DrawManager.ErasePoint(m_ix, m_iy, name);
 }
 
-void Word::SetItem()
+void Word::RandItem()
 {
-	srand(time(NULL));
-	int iRand = rand() % 100 + 1;
+	int iRand;
+	iRand = rand() % 10 + 1;
 
-	if (iRand >= 1 && iRand <= 2)
+	if (iRand > 0 && iRand <= 1)
 		m_eItem = ITEM_INCREASE;
-	else if (iRand >= 3 && iRand <= 4)
+	else if (iRand > 1 && iRand <= 2)
 		m_eItem = ITEM_DECREASE;
-	else if (iRand >= 5 && iRand <= 6)
+	else if (iRand > 2 && iRand <= 3)
 		m_eItem = ITEM_STOP;
-	else if (iRand >= 7 && iRand <= 8)
+	else if (iRand > 3 && iRand <= 4)
 		m_eItem = ITEM_ALLCLEAR;
-	else if (iRand >= 9 && iRand <= 10)
+	else if (iRand > 4 && iRand <= 5)
 		m_eItem = ITEM_BLIND;
-	else if(iRand >= 11 && iRand <= 100)
+	else if(iRand > 5 && iRand <= 11)
 		m_eItem = ITEM_DEFAULT;
 }

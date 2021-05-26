@@ -53,7 +53,7 @@ void GameManager::PlayGame()
 	while (1)
 	{
 		iStage = Stage(iStage);
-
+		m_WordManager.InitItemStatus();
 		if (iStage == 0 || iStage == 5)
 		{
 			return;
@@ -125,25 +125,41 @@ int GameManager::Stage(int iStage)
 					if (!input.empty())
 						input.pop_back();
 					InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+					BLUE
 					cout << input;
 				}
 				else
 				{
 					input += ch;
+					BLUE
 					cout << input;
 				}
 				iCompareClock = clock();
 			}
-			else
+		}
+		if (bInputCheck == false)
+		{
+			RED
+				InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
+			if (clock() - iCompareClock >= COMPARE_TIME + 2000)
 			{
-				RED
-					InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
-					if (clock() - iCompareClock >= COMPARE_TIME + 2000)
-					{
-						InterfaceManager.ErasePoint(WIDTH, HEIGHT / 2 + 6, "Failed compare!");
-						iCompareClock = clock();
-						bInputCheck = true;
-					}
+				InterfaceManager.ErasePoint(WIDTH, HEIGHT / 2 + 6, "Failed compare!");
+				iCompareClock = clock();
+				bInputCheck = true;
+			}
+		}
+		if (m_WordManager.GetBlind() == true)
+		{
+			if (clock() - iBlindTime >= ITEM_BLINDTIME)
+			{
+				m_WordManager.SetBlind(false);
+			}
+		}
+		if (m_WordManager.GetStop() == true)
+		{
+			if (clock() - iStopTime >= ITEM_BLINDTIME)
+			{
+				m_WordManager.SetStop(false);
 			}
 		}
 		if (clock() - iDrawClock >= DRAW_SPEED - m_WordManager.SetDifficulty(iStage))
@@ -154,7 +170,7 @@ int GameManager::Stage(int iStage)
 		}
 		if (clock() - iMoveClock >= DROP_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
-			m_WordManager.DropWord(tmp, iBlindTime, iStopTime);
+			m_WordManager.DropWord(tmp, iStopTime);
 			bflag_Pass = m_WordManager.PassCheck(tmp);
 			if (bflag_Pass == true)
 			{
@@ -175,7 +191,6 @@ int GameManager::Stage(int iStage)
 				}
 			}
 			iMoveClock = clock();
-			iBlindTime = clock();
 			iStopTime = clock();
 		}
 		ShowPlayerStatus();

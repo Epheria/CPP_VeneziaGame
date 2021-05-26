@@ -8,13 +8,13 @@ private:
 	int m_ix;
 	int m_iy;
 	string m_strName;
-	ITEM m_eItem;
+	int m_eItem;
 	Interface DrawManager;
 public:
 	void Drop();
 	void Show(bool m_bBlind);
 	void Erase(string name);
-	void SetItem();
+	void RandItem();
 
 	inline void SetName(string Name)
 	{
@@ -40,7 +40,7 @@ public:
 	{
 		return m_strName;
 	}
-	inline ITEM GetItem()
+	inline int GetItem()
 	{
 		return m_eItem;
 	}
@@ -61,19 +61,43 @@ private:
 public:
 	void LoadFile();
 	inline int Rand();
-	void CreateWord(vector<Word>& tmp, int iStopTime);
-	void DropWord(vector<Word>& tmp, int iBlindTime, int iStopTime);
+	void CreateWord(vector<Word>& tmp, int iClock);
+	void DropWord(vector<Word>& tmp, int iClock);
 	bool DieCheck(vector<Word>& tmp, string input, int& iScore);
 	bool PassCheck(vector<Word>& tmp);
 	void UseItem(vector<Word>::iterator iter);
+	inline void InitItemStatus()
+	{
+		m_bStop = false;
+		m_bBlind = false;
+		m_bAllClear = false;
+		m_iWordSpeed = 0;
+	}
 	int SetDifficulty(int iStage)
 	{
+		int iSpeed = m_iWordSpeed;
 		for (int i = 1; i < iStage; i++)
 		{
-			m_iWordSpeed += 200;
+			iSpeed += 200;
 		}
 
-		return m_iWordSpeed;
+		return iSpeed;
+	}
+	inline bool GetStop()
+	{
+		return m_bStop;
+	}
+	inline bool GetBlind()
+	{
+		return m_bBlind;
+	}
+	inline void SetStop(bool bFlag)
+	{
+		m_bStop = bFlag;
+	}
+	inline void SetBlind(bool bFlag)
+	{
+		m_bBlind = bFlag;
 	}
 	WordManager();
 	~WordManager();
