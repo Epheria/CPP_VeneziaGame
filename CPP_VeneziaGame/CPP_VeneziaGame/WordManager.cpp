@@ -63,7 +63,7 @@ void WordManager::DropWord(vector<Word>& tmp, int iClock)
 			iter->Show(m_bBlind);
 			if ((iter->GetPosx() >= WIDTH - 20 && iter->GetPosx() <= WIDTH + 10))
 			{
-				DrawManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+				DrawManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 14, 5);
 			}
 		}
 	}

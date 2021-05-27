@@ -68,7 +68,6 @@ int GameManager::Stage(int iStage)
 	int iDrawClock = clock();
 	int iMoveClock = clock();
 	int iCompareClock = clock();
-	int iItemClock = clock();
 	int iBlindTime = clock();
 	int iStopTime = clock();
 	char ch;
@@ -81,18 +80,20 @@ int GameManager::Stage(int iStage)
 	SKY_BLUE
 		InterfaceManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
 	ShowPlayerStatus();
-	InterfaceManager.gotoxy(WIDTH - 2, HEIGHT / 2);
+	InterfaceManager.gotoxy(WIDTH - 6, HEIGHT / 2);
 	cout << "☆ " << iStage << " Stage ☆";
 	Sleep(1000);
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2);
 	InterfaceManager.DrawMidText("                   ", WIDTH, HEIGHT / 2);
 
-	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 14, 5);
 	while (1)
 	{
-		InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
 		if (!input.empty())
-			cout << input;
+		{
+			BLUE
+				InterfaceManager.DrawMidText(input, WIDTH, HEIGHT / 2 + 6);
+		}
 		if (_kbhit())
 		{
 			InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
@@ -127,13 +128,14 @@ int GameManager::Stage(int iStage)
 						input.pop_back();
 					InterfaceManager.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
 					BLUE
-					cout << input;
+						InterfaceManager.DrawMidText(input, WIDTH, HEIGHT / 2 + 6);
 				}
 				else
 				{
-					input += ch;
+					if(input.length() <= 20)
+						input += ch;
 					BLUE
-					cout << input;
+						InterfaceManager.DrawMidText(input, WIDTH, HEIGHT / 2 + 6);
 				}
 				iCompareClock = clock();
 			}
@@ -236,7 +238,7 @@ void GameManager::LoadStory()
 				iHeight = HEIGHT / 2 - 8;
 				for (int i = iCur - MAX_LINE + 1; i < iCur + 1; i++)
 				{
-					InterfaceManager.DrawMidText("                                            ",WIDTH, iHeight);
+					InterfaceManager.ErasePoint(WIDTH, iHeight, tmp[i -1]);
 					InterfaceManager.DrawMidText(tmp[i], WIDTH, iHeight++);
 				}
 			}
@@ -258,7 +260,7 @@ void GameManager::SetPlayerName()
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);
 	InterfaceManager.DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
 	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
-	InterfaceManager.gotoxy(WIDTH, HEIGHT / 2 + 6);
+	InterfaceManager.gotoxy(WIDTH - 2, HEIGHT / 2 + 6);
 	cin >> name;
 	m_Player.SetName(name);
 	InterfaceManager.BoxErase(WIDTH, HEIGHT / 2 + 10);

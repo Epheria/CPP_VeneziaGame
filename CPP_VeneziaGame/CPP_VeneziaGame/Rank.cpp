@@ -23,7 +23,7 @@ void Rank::LoadRank(Player& m_Player)
 	int iHeight = START_Y + 11;
 	Ranker tmp;
 	ifstream fLoad;
-	int iSelect, iSel, index;
+	int iSelect, index;
 	fLoad.open("Rank.txt");
 	if (fLoad.is_open())
 	{
