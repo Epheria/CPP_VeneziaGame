@@ -38,7 +38,6 @@ void WordManager::LoadFile()
 
 void WordManager::CreateWord(vector<Word>& tmp, int iClock)
 {
-	srand(time(NULL));
 	Word wTmp;
 	int index = rand() % m_iWordNum;
 	
@@ -59,7 +58,7 @@ void WordManager::DropWord(vector<Word>& tmp, int iClock)
 	{
 		for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 		{
-			iter->Erase(iter->GetName());
+			iter->Erase(iter->GetName(), m_bBlind);
 			iter->Drop();
 			iter->Show(m_bBlind);
 			if ((iter->GetPosx() >= WIDTH - 20 && iter->GetPosx() <= WIDTH + 10))
@@ -76,7 +75,7 @@ bool WordManager::PassCheck(vector<Word>& tmp)
 	{
 		if (iter->GetPosy() == DEADZONE)
 		{
-			iter->Erase(iter->GetName());
+			iter->Erase(iter->GetName(), m_bBlind);
 			DrawManager.gotoxy(0, HEIGHT - 4);
 			for (int i = 0; i < 60; i++)
 			{
@@ -107,7 +106,7 @@ bool WordManager::DieCheck(vector<Word>& tmp, string input, int& iScore)
 	{
 		if (iter->GetName() == input)
 		{
-			iter->Erase(iter->GetName());
+			iter->Erase(iter->GetName(), m_bBlind);
 			if (!(iter->GetItem() == ITEM_DEFAULT))
 			{
 				UseItem(iter);
@@ -116,7 +115,7 @@ bool WordManager::DieCheck(vector<Word>& tmp, string input, int& iScore)
 					for (vector<Word>::iterator iter = tmp.begin(); iter != tmp.end(); iter++)
 					{
 						iKillCount = tmp.size();
-						iter->Erase(iter->GetName());
+						iter->Erase(iter->GetName(), m_bBlind);
 					}
 					tmp.clear();
 					iScore = iKillCount * 10;
@@ -185,7 +184,7 @@ void Word::Show(bool m_bBlind)
 	if (m_bBlind == true)
 	{
 		YELLOW
-			DrawManager.DrawMidText("==========", m_ix, m_iy);
+			DrawManager.DrawMidText("======", m_ix, m_iy);
 	}
 	else
 	{
@@ -194,42 +193,49 @@ void Word::Show(bool m_bBlind)
 			BLUE
 				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
 		}
-		else if (m_eItem == ITEM_BLIND)
-		{
-			GREEN
-				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-		}
-		else if (m_eItem == ITEM_ALLCLEAR)
-		{
-			GOLD
-				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-		}
-		else if (m_eItem == ITEM_DECREASE)
-		{
-			ORIGINAL
-				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-		}
-		else if (m_eItem == ITEM_INCREASE)
-		{
-			GRAY
-				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-		}
-		else if (m_eItem == ITEM_STOP)
-		{
-			RED
-				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
-		}
-		//else
+		//else if (m_eItem == ITEM_BLIND)
 		//{
-		//	PURPLE
+		//	GREEN
 		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
 		//}
+		//else if (m_eItem == ITEM_ALLCLEAR)
+		//{
+		//	GOLD
+		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		//}
+		//else if (m_eItem == ITEM_DECREASE)
+		//{
+		//	ORIGINAL
+		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		//}
+		//else if (m_eItem == ITEM_INCREASE)
+		//{
+		//	GRAY
+		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		//}
+		//else if (m_eItem == ITEM_STOP)
+		//{
+		//	RED
+		//		DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		//}
+		else
+		{
+			PURPLE
+				DrawManager.DrawMidText(m_strName, m_ix, m_iy);
+		}
 	}
 }
 
-void Word::Erase(string name)
+void Word::Erase(string name, bool m_bBlind)
 {
-	DrawManager.ErasePoint(m_ix, m_iy, name);
+	if (m_bBlind == true)
+	{
+		DrawManager.ErasePoint(m_ix, m_iy, "========");
+	}
+	else
+	{
+		DrawManager.ErasePoint(m_ix, m_iy, name);
+	}
 }
 
 void Word::RandItem()

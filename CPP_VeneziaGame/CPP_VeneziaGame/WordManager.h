@@ -13,7 +13,7 @@ private:
 public:
 	void Drop();
 	void Show(bool m_bBlind);
-	void Erase(string name);
+	void Erase(string name, bool m_bBlind);
 	void RandItem();
 
 	inline void SetName(string Name)

@@ -11,3 +11,8 @@ sdfd 1500 2
 skdf 30 1
 asdf 230 2
 akdf 10 1
+sodf 430 3
+skdkf 2290 2
+sod 790 3
+sdj 70 1
+sdf 900 5

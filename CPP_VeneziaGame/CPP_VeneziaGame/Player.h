@@ -19,7 +19,7 @@ public:
 	{
 		m_iScore += iScore;
 		m_iScore += iAllClear;
-		if (m_iScore % 100 == 0)
+		if (m_iScore % 100 == 0 || iAllClear >= 100)
 		{
 			return true;
 		}

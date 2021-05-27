@@ -54,7 +54,7 @@ void GameManager::PlayGame()
 	{
 		iStage = Stage(iStage);
 		m_WordManager.InitItemStatus();
-		if (iStage == 0 || iStage == 5)
+		if (iStage == 0 || iStage == 6)
 		{
 			return;
 		}
@@ -106,6 +106,7 @@ int GameManager::Stage(int iStage)
 					if (bflag_Die == true)
 					{
 						bNextStage = m_Player.AddScore(iAllClear);
+						iAllClear = 0;
 						bInputCheck = true;
 						if (bNextStage == true)
 						{
@@ -148,25 +149,20 @@ int GameManager::Stage(int iStage)
 				bInputCheck = true;
 			}
 		}
-		if (m_WordManager.GetBlind() == true)
+		if (clock() - iBlindTime >= ITEM_BLINDTIME)
 		{
-			if (clock() - iBlindTime >= ITEM_BLINDTIME)
-			{
-				m_WordManager.SetBlind(false);
-			}
+			m_WordManager.SetBlind(false);
+			iBlindTime = clock();
 		}
-		if (m_WordManager.GetStop() == true)
+		if (clock() - iStopTime >= ITEM_STOPTIME)
 		{
-			if (clock() - iStopTime >= ITEM_BLINDTIME)
-			{
-				m_WordManager.SetStop(false);
-			}
+			m_WordManager.SetStop(false);
+			iStopTime = clock();
 		}
 		if (clock() - iDrawClock >= DRAW_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
 			m_WordManager.CreateWord(tmp, iStopTime);
 			iDrawClock = clock();
-			iStopTime = clock();
 		}
 		if (clock() - iMoveClock >= DROP_SPEED - m_WordManager.SetDifficulty(iStage))
 		{
@@ -191,7 +187,6 @@ int GameManager::Stage(int iStage)
 				}
 			}
 			iMoveClock = clock();
-			iStopTime = clock();
 		}
 		ShowPlayerStatus();
 	}

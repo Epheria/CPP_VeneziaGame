@@ -40,8 +40,9 @@ using namespace std;
 #define DROP_SPEED 700
 #define COMPARE_TIME 2000
 #define ITEM_TIME 3500
-#define ITEM_BLINDTIME 1500
+#define ITEM_BLINDTIME 3000
 #define ITEM_STOPTIME 3000
+
 enum ITEM
 {
 	ITEM_START = 0,
