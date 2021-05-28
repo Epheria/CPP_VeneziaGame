@@ -11,12 +11,15 @@ private:
 	string m_strName;
 	int m_iLife;
 
+	int m_iClock;
+	bool m_bInputCheck;
 	string m_strInput;
 public:
 	void ShowPlayerLife();
 	void ShowPlayerScore();
 	void ShowPlayerName();
 	bool KeyInput();
+	void CheckInput();
 
 	inline bool AddScore(int iAllClear, int iScore = 10)
 	{
@@ -55,6 +58,7 @@ public:
 	}
 	inline void InitInput()
 	{
+		m_iClock = clock();
 		m_strInput.clear();
 	}
 	inline void InitScore()
@@ -64,6 +68,10 @@ public:
 	void SetName(string name)
 	{
 		m_strName = name;
+	}
+	void SetInputCheck()
+	{
+		m_bInputCheck = false;
 	}
 	string GetName()
 	{

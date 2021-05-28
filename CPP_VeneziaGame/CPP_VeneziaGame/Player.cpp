@@ -2,6 +2,8 @@
 
 Player::Player()
 {
+	m_iClock = clock();
+	m_bInputCheck = true;
 	m_iLife = 9;
 	m_iScore = 0;
 }
@@ -48,12 +50,9 @@ void Player::ShowPlayerName()
 
 bool Player::KeyInput()
 {
-	//if (!m_strInput.empty())
-	//{
-	//	BLUE
-	//		m_Interface.ErasePoint(WIDTH, HEIGHT / 2 + 6, m_strInput);
-	//	m_Interface.DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
-	//}
+	if (m_bInputCheck == false)
+		return false;
+
 	char ch;
 	if (_kbhit())
 	{
@@ -85,7 +84,21 @@ bool Player::KeyInput()
 	return false;
 }
 
+void Player::CheckInput()
+{
+	if (m_bInputCheck == false)
+	{
+		RED
+			m_Interface.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
 
+		if (clock() - m_iClock >= COMPARE_TIME + 2000)
+		{
+			m_Interface.ErasePoint(WIDTH, HEIGHT / 2 + 6, "Failed compare!");
+			m_bInputCheck = true;
+			m_iClock = clock();
+		}
+	}
+}
 
 Player::~Player()
 {

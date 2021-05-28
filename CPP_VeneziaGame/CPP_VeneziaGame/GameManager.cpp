@@ -63,7 +63,7 @@ void GameManager::PlayGame()
 
 int GameManager::Stage(int iStage)
 {
-	bool bInputCheck = true, bflag_Pass = false, bGameOver = false, bflag_Die = false, bNextStage = false;
+	bool bflag_Pass = false, bGameOver = false, bflag_Die = false, bNextStage = false;
 	int iDrawClock = clock();
 	int iCompareClock = clock();
 	int iMoveClock = clock();
@@ -86,39 +86,25 @@ int GameManager::Stage(int iStage)
 	InterfaceManager.BoxDraw(WIDTH, HEIGHT / 2 + 4, 14, 5);
 	while (1)
 	{
-		if (bInputCheck == true)
+		if (m_Player.KeyInput() == true)
 		{
-			if (m_Player.KeyInput() == true)
+			bflag_Die = m_WordManager.DieCheck(tmp, m_Player.GetInput(), iAllClear);
+			if (bflag_Die == true)
 			{
-				bflag_Die = m_WordManager.DieCheck(tmp, m_Player.GetInput(), iAllClear);
-				if (bflag_Die == true)
-				{
-					bNextStage = m_Player.AddScore(iAllClear);
-					iAllClear = 0;
-					m_Player.InitInput();
-					if (bNextStage == true)
-						return iStage += 1;
-				}
-				else
-				{
-					m_Player.InitInput();
-					bInputCheck = false;
-				}
+				bNextStage = m_Player.AddScore(iAllClear);
+				iAllClear = 0;
+				m_Player.InitInput();
+				if (bNextStage == true)
+					return iStage += 1;
+			}
+			else
+			{
+				m_Player.SetInputCheck();
+				m_Player.InitInput();
 			}
 		}
-		else
-		{
-			RED
-				InterfaceManager.DrawMidText("Failed compare!", WIDTH, HEIGHT / 2 + 6);
+		m_Player.CheckInput();
 
-			if (clock() - iCompareClock >= COMPARE_TIME + 2000)
-			{
-				InterfaceManager.ErasePoint(WIDTH, HEIGHT / 2 + 6, "Failed compare!");
-				bInputCheck = true;
-				iCompareClock = clock();
-			}
-		}
-		
 		if (clock() - iBlindTime >= ITEM_BLINDTIME)
 		{
 			m_WordManager.SetBlind(false);

@@ -3,7 +3,7 @@
 
 void main()
 {
+	system("mode con: cols=140 lines=50");
 	GameManager mGameManager;
 	mGameManager.ShowMenu();
-	system("mode con: cols=120 lines=30");
 }
