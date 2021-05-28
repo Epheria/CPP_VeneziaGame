@@ -1,6 +1,7 @@
 #pragma once
 #include "Macro.h"
 #include "Interface.h"
+#include "WordManager.h"
 
 class Player
 {
@@ -10,10 +11,12 @@ private:
 	string m_strName;
 	int m_iLife;
 
+	string m_strInput;
 public:
 	void ShowPlayerLife();
 	void ShowPlayerScore();
 	void ShowPlayerName();
+	bool KeyInput();
 
 	inline bool AddScore(int iAllClear, int iScore = 10)
 	{
@@ -45,6 +48,14 @@ public:
 	inline int GetScore()
 	{
 		return m_iScore;
+	}
+	inline string GetInput()
+	{
+		return m_strInput;
+	}
+	inline void InitInput()
+	{
+		m_strInput.clear();
 	}
 	inline void InitScore()
 	{

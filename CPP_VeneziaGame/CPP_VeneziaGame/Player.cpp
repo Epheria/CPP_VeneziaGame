@@ -46,6 +46,46 @@ void Player::ShowPlayerName()
 	}
 }
 
+bool Player::KeyInput()
+{
+	//if (!m_strInput.empty())
+	//{
+	//	BLUE
+	//		m_Interface.ErasePoint(WIDTH, HEIGHT / 2 + 6, m_strInput);
+	//	m_Interface.DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
+	//}
+	char ch;
+	if (_kbhit())
+	{
+		m_Interface.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+		ch = _getch();
+		if (ch == KEY_ENTER)
+		{
+			m_Interface.ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, m_strInput);
+			return true;
+		}
+		else if (ch == KEY_BACKSPACE)
+		{
+			m_Interface.ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, m_strInput);
+			if (!m_strInput.empty())
+				m_strInput.pop_back();
+			m_Interface.gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+			BLUE
+				m_Interface.DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
+		}
+		else
+		{
+			if (m_strInput.length() <= 20)
+				m_strInput += ch;
+			BLUE
+				m_Interface.DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
+		}
+	}
+	m_Interface.DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
+	return false;
+}
+
+
 
 Player::~Player()
 {
