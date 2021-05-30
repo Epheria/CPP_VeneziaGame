@@ -7,7 +7,6 @@
 class GameManager
 {
 private:
-	Interface InterfaceManager;
 	Player m_Player;
 	WordManager m_WordManager;
 	Rank m_RankManager;

@@ -46,35 +46,35 @@ void Rank::LoadRank(Player& m_Player)
 
 		system("cls");
 		GREEN
-			DrawManager.BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
+			Interface::BoxDraw(START_X, START_Y, WIDTH, HEIGHT - 3);
 		BLUE
-			DrawManager.BoxDraw(WIDTH, START_Y + 4, 20, 5);
-		DrawManager.DrawMidText("Ranking", WIDTH, START_Y + 6);
-		DrawManager.gotoxy(START_X + 2, START_Y + 9);
+			Interface::BoxDraw(WIDTH, START_Y + 4, 20, 5);
+		Interface::DrawMidText("Ranking", WIDTH, START_Y + 6);
+		Interface::gotoxy(START_X + 2, START_Y + 9);
 		for (int i = 0; i < 116; i++)
 			cout << "=";
-		DrawManager.DrawMidText("Name", WIDTH - 15, START_Y + 11);
-		DrawManager.DrawMidText("Score", WIDTH, START_Y + 11);
-		DrawManager.DrawMidText("Stage", WIDTH + 15, START_Y + 11);
+		Interface::DrawMidText("Name", WIDTH - 15, START_Y + 11);
+		Interface::DrawMidText("Score", WIDTH, START_Y + 11);
+		Interface::DrawMidText("Stage", WIDTH + 15, START_Y + 11);
 
 		for (int i = 0; i < 7; i++)
 		{
-			if (index <= iMax)
+			if (index < RankerList.size())
 			{
-				DrawManager.DrawMidText(RankerList[index].strName, WIDTH - 15, iHeight += 2);
-				DrawManager.gotoxy(WIDTH, iHeight);
+				Interface::DrawMidText(RankerList[index].strName, WIDTH - 15, iHeight += 2);
+				Interface::gotoxy(WIDTH, iHeight);
 				cout << RankerList[index].iScore;
-				DrawManager.gotoxy(WIDTH + 15, iHeight);
+				Interface::gotoxy(WIDTH + 15, iHeight);
 				cout << RankerList[index].iStage;
 				index++;
 			}
 		}
 		iHeight = START_Y + 11;
-		DrawManager.DrawMidText("이전 페이지", WIDTH, START_Y + 27);
-		DrawManager.DrawMidText("다음 페이지", WIDTH, START_Y + 29);
-		DrawManager.DrawMidText("나가기", WIDTH, START_Y + 31);
+		Interface::DrawMidText("이전 페이지", WIDTH, START_Y + 27);
+		Interface::DrawMidText("다음 페이지", WIDTH, START_Y + 29);
+		Interface::DrawMidText("나가기", WIDTH, START_Y + 31);
 		
-		iSelect = DrawManager.MenuSelectCursor(3, 2, WIDTH / 4, START_Y + 27);
+		iSelect = Interface::MenuSelectCursor(3, 2, WIDTH / 4, START_Y + 27);
 
 		if (iSelect == 1)
 		{

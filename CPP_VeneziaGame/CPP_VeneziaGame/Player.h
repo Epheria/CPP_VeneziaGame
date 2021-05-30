@@ -6,7 +6,6 @@
 class Player
 {
 private:
-	Interface m_Interface;
 	int m_iScore;
 	string m_strName;
 	int m_iLife;

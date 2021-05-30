@@ -9,7 +9,6 @@ private:
 	int m_iy;
 	string m_strName;
 	int m_eItem;
-	Interface DrawManager;
 public:
 	void Drop();
 	void Show(bool m_bBlind);
@@ -56,13 +55,16 @@ private:
 	bool m_bAllClear;
 	int m_iWordSpeed;
 	int m_iWordNum;
+	int m_iDrawClock;
+	int m_iMoveClock;
+	int m_iBlindTime;
+	int m_iStopTime;
 	vector<Word> m_WordList;
-	Interface DrawManager;
 public:
 	void LoadFile();
 	inline int Rand();
-	void CreateWord(vector<Word>& tmp, int iClock);
-	void DropWord(vector<Word>& tmp, int iClock);
+	void CreateWord(vector<Word>& tmp, int iStage);
+	void DropWord(vector<Word>& tmp, int iStage);
 	bool DieCheck(vector<Word>& tmp, string input, int& iScore);
 	bool PassCheck(vector<Word>& tmp);
 	void UseItem(vector<Word>::iterator iter);
@@ -91,13 +93,27 @@ public:
 	{
 		return m_bBlind;
 	}
-	inline void SetStop(bool bFlag)
+	inline void StopCheck()
 	{
-		m_bStop = bFlag;
+		if (m_bStop == true)
+		{
+			if (clock() - m_iStopTime >= ITEM_STOPTIME)
+			{
+				m_bStop = false;
+				m_iStopTime = clock();
+			}
+		}
 	}
-	inline void SetBlind(bool bFlag)
+	inline void BlindCheck()
 	{
-		m_bBlind = bFlag;
+		if (m_bBlind == true)
+		{
+			if (clock() - m_iBlindTime >= ITEM_BLINDTIME)
+			{
+				m_bBlind = false;
+				m_iBlindTime = clock();
+			}
+		}
 	}
 	WordManager();
 	~WordManager();
