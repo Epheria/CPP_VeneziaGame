@@ -64,10 +64,6 @@ void GameManager::PlayGame()
 int GameManager::Stage(int iStage)
 {
 	bool bflag_Pass = false, bGameOver = false, bflag_Die = false, bNextStage = false;
-	int iDrawClock = clock();
-	int iMoveClock = clock();
-	int iBlindTime = clock();
-	int iStopTime = clock();
 	int iAllClear = 0;
 	vector<Word> tmp;
 
