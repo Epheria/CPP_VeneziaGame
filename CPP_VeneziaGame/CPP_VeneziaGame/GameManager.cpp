@@ -198,7 +198,7 @@ void GameManager::SetPlayerName()
 	
 	Interface::BoxErase(WIDTH, HEIGHT / 2 + 10);
 	Interface::DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
-	Interface::BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
+	Interface::BoxDraw(WIDTH, HEIGHT / 2 + 4, 14, 5);
 	Interface::gotoxy(WIDTH, HEIGHT / 2 + 6);
 
 	while (1)
@@ -225,7 +225,8 @@ void GameManager::SetPlayerName()
 						name += ch;
 					Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, name);
 				}
-			Interface::DrawMidText(name, WIDTH, HEIGHT / 2 + 6);
+				Interface::BoxDraw(WIDTH, HEIGHT / 2 + 4, 14, 5);
+				Interface::DrawMidText(name, WIDTH, HEIGHT / 2 + 6);
 			}
 	}
 	Interface::BoxErase(WIDTH, HEIGHT / 2 + 10);
