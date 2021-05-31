@@ -56,28 +56,24 @@ bool Player::KeyInput()
 	char ch;
 	if (_kbhit())
 	{
-		Interface::gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
+		Interface::gotoxy(WIDTH, HEIGHT / 2 + 6);
 		ch = _getch();
 		if (ch == KEY_ENTER)
 		{
-			Interface::ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, m_strInput);
+			Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, m_strInput);
 			return true;
 		}
 		else if (ch == KEY_BACKSPACE)
 		{
-			Interface::ErasePoint(WIDTH - 4, HEIGHT / 2 + 6, m_strInput);
+			Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, m_strInput);
 			if (!m_strInput.empty())
 				m_strInput.pop_back();
-			Interface::gotoxy(WIDTH - 4, HEIGHT / 2 + 6);
-			BLUE
-				Interface::DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
 		}
 		else
 		{
 			if (m_strInput.length() <= 20)
 				m_strInput += ch;
-			BLUE
-				Interface::DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);
+			Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, m_strInput);
 		}
 	}
 	Interface::DrawMidText(m_strInput, WIDTH, HEIGHT / 2 + 6);

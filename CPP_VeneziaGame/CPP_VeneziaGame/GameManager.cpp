@@ -194,13 +194,40 @@ void GameManager::LoadStory()
 void GameManager::SetPlayerName()
 {
 	string name;
-
+	char ch;
+	
 	Interface::BoxErase(WIDTH, HEIGHT / 2 + 10);
 	Interface::DrawMidText("이름 입력", WIDTH, HEIGHT / 2 + 2);
 	Interface::BoxDraw(WIDTH, HEIGHT / 2 + 4, 10, 5);
-	Interface::gotoxy(WIDTH - 2, HEIGHT / 2 + 6);
-	cin >> name;
-	m_Player.SetName(name);
+	Interface::gotoxy(WIDTH, HEIGHT / 2 + 6);
+
+	while (1)
+	{
+			if (_kbhit())
+			{
+				ch = _getch();
+
+				if (ch == KEY_ENTER)
+				{
+					Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, name);
+					m_Player.SetName(name);
+					return;
+				}
+				else if (ch == KEY_BACKSPACE)
+				{
+					Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, name);
+					if (!name.empty())
+						name.pop_back();
+				}
+				else
+				{
+					if (name.length() <= 14)
+						name += ch;
+					Interface::ErasePoint(WIDTH, HEIGHT / 2 + 6, name);
+				}
+			Interface::DrawMidText(name, WIDTH, HEIGHT / 2 + 6);
+			}
+	}
 	Interface::BoxErase(WIDTH, HEIGHT / 2 + 10);
 }
 

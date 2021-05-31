@@ -251,7 +251,7 @@ void Word::Erase(string name, bool m_bBlind)
 {
 	if (m_bBlind == true)
 	{
-		Interface::ErasePoint(m_ix, m_iy, "========");
+		Interface::ErasePoint(m_ix, m_iy, "======");
 	}
 	else
 	{
